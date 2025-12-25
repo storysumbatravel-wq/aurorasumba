@@ -19,7 +19,7 @@ const geistMono = Geist_Mono({
 
 /* SEO FRIEDLY*/
 export const metadata = {
-  metadataBase: new URL("https://storysumba.com"),
+  metadataBase: new URL("https://storysumbatravel.com"),
   title: {
     default: "Story Sumba Travel | Paket Wisata Sumba Terbaik",
     template: "%s | Story Sumba Travel",
@@ -39,7 +39,7 @@ export const metadata = {
     title: "Story Sumba Travel | Paket Wisata Sumba Terbaik",
     description:
       "Paket wisata Sumba lengkap 3D2N – 7D6N. Booking mudah, harga transparan, dan guide lokal berpengalaman.",
-    url: "https://storysumba.com",
+    url: "https://storysumbatravel.com",
     siteName: "Story Sumba Travel",
     images: [
       {
@@ -60,10 +60,10 @@ export const metadata = {
     images: ["/images/seo-cover.jpg"],
   },
   alternates: {
-    canonical: "https://storysumba.com",
+    canonical: "https://storysumbatravel.com",
     languages: {
-      "id-ID": "https://storysumba.com",
-      "en-US": "https://storysumba.com/en",
+      "id-ID": "https://storysumbatravel.com",
+      "en-US": "https://storysumbatravel.com/en",
     },
   },
 };
