@@ -8,6 +8,8 @@ import { FaTripadvisor } from "react-icons/fa";
 import Image from "next/image";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+
 const wa = process.env.NEXT_PUBLIC_WA_NUMBER;
 const mahakaUrl =
   process.env.NEXT_PUBLIC_MAHAKA_URL ?? "https://mahakaattraction.id";
