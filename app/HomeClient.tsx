@@ -8,6 +8,8 @@ import { FaTripadvisor } from "react-icons/fa";
 import Image from "next/image";
 import Link from "next/link";
 
+import { motion, AnimatePresence, Variants } from "framer-motion";
+
 const wa = process.env.NEXT_PUBLIC_WA_NUMBER;
 const mahakaUrl =
   process.env.NEXT_PUBLIC_MAHAKA_URL ?? "https://mahakaattraction.id";
@@ -361,7 +363,34 @@ const getPriceByPax = (prices: PriceItem[], pax: number): number => {
 
 const formatRupiah = (value: number) => "IDR " + value.toLocaleString("id-ID");
 
-export default function Page() {
+const sectionFadeUp: Variants = {
+  hidden: { opacity: 0, y: 60 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.7, ease: "easeOut" },
+  },
+};
+
+const sectionFadeLeft: Variants = {
+  hidden: { opacity: 0, x: -60 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.7, ease: "easeOut" },
+  },
+};
+
+const sectionZoom: Variants = {
+  hidden: { opacity: 0, scale: 0.95 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 0.7, ease: "easeOut" },
+  },
+};
+
+export default function HomeClient() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const [lang, setLang] = useState<"id" | "en">("id");
@@ -383,7 +412,12 @@ export default function Page() {
   return (
     <main className="font-sans">
       {/* ================= NAVBAR ================= */}
-      <nav className="fixed top-0 left-0 w-full z-50 bg-white/80 backdrop-blur shadow-sm">
+      <motion.nav
+        initial={{ y: -80, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="fixed top-0 left-0 w-full z-50 bg-white/80 backdrop-blur shadow-sm"
+      >
         <h2 className="sr-only">
           Paket Wisata Sumba 3 Hari 2 Malam, 4 Hari 3 Malam, 5 Hari 4 Malam
         </h2>
@@ -398,7 +432,8 @@ export default function Page() {
               width={"300"}
             />
             <span className="font-bold text-lg">
-              Story<span className="unbounded-font text-red-700">Sumba</span>
+              Story
+              <span className="unbounded-font text-red-700">Sumba</span>
             </span>
           </a>
 
@@ -437,90 +472,100 @@ export default function Page() {
         </div>
 
         {/* Mobile Menu */}
-        {menuOpen && (
-          <div className="fixed inset-0 z-50 md:hidden">
-            {/* Overlay */}
-            <div
-              className="absolute inset-0 bg-black/70 backdrop-blur-sm"
-              onClick={() => setMenuOpen(false)}
-            />
+        <AnimatePresence>
+          {menuOpen && (
+            <motion.div
+              className="fixed inset-0 z-50 md:hidden"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setMenuOpen(false)} // 👈 klik di mana saja = close
+            >
+              {/* OVERLAY */}
+              <div
+                className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+                // onClick={() => setMenuOpen(false)}
+              />
 
-            {/* Drawer */}
-            <div className="absolute top-0 right-0 w-72 h-screen bg-black/90 text-gray-300 p-6 flex flex-col">
-              {/* Close */}
-              <button
-                className="absolute top-4 right-4 text-gray-400 hover:text-white transition"
-                onClick={() => setMenuOpen(false)}
+              {/* DRAWER MENU */}
+              <motion.div
+                initial={{ x: "100%" }}
+                animate={{ x: 0 }}
+                exit={{ x: "100%" }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
+                className="absolute top-0 right-0 w-72 h-screen bg-black text-gray-300 p-6 flex flex-col"
+                onClick={(e) => e.stopPropagation()} // 👈 klik menu TIDAK menutup
               >
-                <X size={24} />
-              </button>
-
-              {/* Menu */}
-              <nav className="mt-16 space-y-8">
-                <a
-                  href="#home"
+                {/* CLOSE */}
+                <button
+                  className="self-end mb-8"
                   onClick={() => setMenuOpen(false)}
-                  className="block text-xl font-semibold hover:text-white transition"
+                >
+                  <X size={24} />
+                </button>
+
+                {/* MENU */}
+                <a
+                  onClick={() => setMenuOpen(false)}
+                  href="#home"
+                  className="text-2xl font-semibold mb-6 hover:text-white"
                 >
                   {t.nav.home}
                 </a>
-
                 <a
-                  href="#about"
                   onClick={() => setMenuOpen(false)}
-                  className="block text-xl font-semibold hover:text-white transition"
+                  href="#about"
+                  className="text-2xl font-semibold mb-6 hover:text-white"
                 >
                   {t.nav.about}
                 </a>
-
                 <a
-                  href="#gallery"
                   onClick={() => setMenuOpen(false)}
-                  className="block text-xl font-semibold hover:text-white transition"
+                  href="#gallery"
+                  className="text-2xl font-semibold mb-6 hover:text-white"
                 >
                   {t.nav.gallery}
                 </a>
-
                 <a
-                  href="#paket"
                   onClick={() => setMenuOpen(false)}
-                  className="block text-xl font-semibold hover:text-white transition"
+                  href="#paket"
+                  className="text-2xl font-semibold mb-6 hover:text-white"
                 >
                   {t.nav.paket}
                 </a>
-
                 <a
-                  href="#kontak"
                   onClick={() => setMenuOpen(false)}
-                  className="block text-xl font-semibold hover:text-white transition"
+                  href="#kontak"
+                  className="text-2xl font-semibold hover:text-white"
                 >
                   {t.nav.kontak}
                 </a>
-              </nav>
 
-              {/* Divider */}
-              <div className="my-10 border-t border-gray-700" />
-
-              {/* Language Switch */}
-              <button
-                onClick={() => {
-                  setLang(lang === "id" ? "en" : "id");
-                  setMenuOpen(false);
-                }}
-                className="mt-auto w-full flex items-center justify-center gap-2 border border-gray-600 rounded-lg py-3 text-lg font-semibold text-gray-300 hover:bg-white/10 hover:text-white transition"
-              >
-                <Globe size={18} />
-                {lang === "id" ? "English" : "Bahasa"}
-              </button>
-            </div>
-          </div>
-        )}
-      </nav>
+                {/* LANGUAGE */}
+                <button
+                  onClick={() => {
+                    setLang(lang === "id" ? "en" : "id");
+                    setMenuOpen(false);
+                  }}
+                  className="mt-auto border border-gray-600 rounded-lg py-3 text-lg font-semibold hover:bg-white hover:text-black transition"
+                >
+                  <Globe size={18} className="inline mr-2" />
+                  {lang === "id" ? "English" : "Bahasa"}
+                </button>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.nav>
 
       {/* ================= HOME ================= */}
-      <section
+      <motion.section
         id="home"
         className="relative min-h-screen flex items-center justify-center text-center px-6 overflow-hidden"
+        variants={sectionFadeUp}
+        initial="visible"
+        animate="visible"
+        viewport={{ once: true }}
       >
         <h2 className="sr-only">
           Paket Wisata Sumba 3 Hari 2 Malam, 4 Hari 3 Malam, 5 Hari 4 Malam
@@ -577,12 +622,16 @@ export default function Page() {
             </a> */}
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* ================= ABOUT ================= */}
-      <section
+      <motion.section
         id="about"
         className="py-24 px-6 bg-linear-to-b from-white via-gray-50 to-white"
+        variants={sectionFadeLeft}
+        initial="visible"
+        animate="visible"
+        viewport={{ once: true }}
       >
         <h2 className="sr-only">
           Paket Wisata Sumba 3 Hari 2 Malam, 4 Hari 3 Malam, 5 Hari 4 Malam
@@ -651,12 +700,16 @@ export default function Page() {
             />
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* ================= GALLERY ================= */}
-      <section
+      <motion.section
         id="gallery"
         className="py-20 px-6 bg-linear-to-b from-gray-900 via-gray-800 to-gray-900"
+        variants={sectionZoom}
+        initial="visible"
+        animate="visible"
+        viewport={{ once: true }}
       >
         <h2 className="sr-only">
           Paket Wisata Sumba 3 Hari 2 Malam, 4 Hari 3 Malam, 5 Hari 4 Malam
@@ -687,12 +740,16 @@ export default function Page() {
             </div>
           ))}
         </div>
-      </section>
+      </motion.section>
 
       {/* ================= PAKET ================= */}
-      <section
+      <motion.section
         id="paket"
         className="py-20 px-6 bg-linear-to-b from-gray-50 via-white to-gray-100"
+        variants={sectionFadeUp}
+        initial="visible"
+        animate="visible"
+        viewport={{ once: true }}
       >
         <h2 className="sr-only">
           Paket Wisata Sumba 3 Hari 2 Malam, 4 Hari 3 Malam, 5 Hari 4 Malam
@@ -740,12 +797,16 @@ export default function Page() {
             </div>
           ))}
         </div>
-      </section>
+      </motion.section>
 
       {/* ================= KONTAK ================= */}
-      <section
+      <motion.section
         id="kontak"
         className="py-20 px-6 bg-linear-to-b from-white via-gray-100 to-white"
+        variants={sectionFadeUp}
+        initial="visible"
+        animate="visible"
+        viewport={{ once: true }}
       >
         <h2 className="sr-only">
           Paket Wisata Sumba 3 Hari 2 Malam, 4 Hari 3 Malam, 5 Hari 4 Malam
@@ -814,7 +875,7 @@ export default function Page() {
             </div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* ================= FOOTER ================= */}
       <footer className="bg-black text-gray-300">
