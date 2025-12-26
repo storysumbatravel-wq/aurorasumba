@@ -26,9 +26,12 @@ export const metadata = {
   keywords: [
     "Travel Sumba",
     "Paket Wisata Sumba",
+    "Tour",
     "Tour Sumba",
-    "Sumba Tour Package",
+    "Sumba",
+    "Travel Agent",
     "Sumba Travel Agent",
+    "Sumba Tour Package",
   ],
 
   authors: [{ name: "Story Sumba Travel" }],

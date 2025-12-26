@@ -1259,9 +1259,9 @@ export default function HomeClient() {
             "@context": "https://schema.org",
             "@type": "TravelAgency",
             name: "Story Sumba Travel",
-            url: "https://storysumba.com",
-            logo: "https://storysumba.com/images/logo.png",
-            image: "https://storysumba.com/images/seo-cover.jpg",
+            url: "https://storysumbatravel.com",
+            logo: "https://storysumbatravel.com/images/logo.png",
+            image: "https://storysumbatravel.com/images/seo-cover.jpg",
             description:
               "Travel agent profesional penyedia paket wisata Sumba dengan guide lokal berpengalaman.",
             address: {
@@ -1278,9 +1278,9 @@ export default function HomeClient() {
               contactType: "customer service",
             },
             sameAs: [
-              "https://instagram.com/username",
+              "https://instagram.com/storysumba",
               "https://www.tripadvisor.com",
-              "https://www.tiktok.com/@username",
+              "https://www.tiktok.com/@storysumba",
             ],
           }),
         }}
