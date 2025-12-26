@@ -776,13 +776,13 @@ export default function HomeClient() {
                 <div className="flex gap-3 mt-4">
                   <button
                     onClick={() => setDetail(p)}
-                    className="flex-1 bg-white/90 text-black py-2 rounded-lg"
+                    className="flex-1 bg-white/90 cursor-pointer text-black py-2 rounded-lg"
                   >
                     {t.detail}
                   </button>
                   <button
                     onClick={() => setBooking(p)}
-                    className="flex-1 bg-red-600 py-2 rounded-lg"
+                    className="flex-1 bg-red-600 cursor-pointer py-2 rounded-lg"
                   >
                     {t.booking}
                   </button>
