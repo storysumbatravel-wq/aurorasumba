@@ -467,7 +467,7 @@ export default function HomeClient() {
 
           {/* Mobile Button */}
           <button className="md:hidden" onClick={() => setMenuOpen(true)}>
-            <Menu size={28} />
+            <Menu size={20} />
           </button>
         </div>
 
@@ -774,12 +774,6 @@ export default function HomeClient() {
                 <p className="mt-2 font-semibold">{p.price}</p>
 
                 <div className="flex gap-3 mt-4">
-                  {/* <Link
-                    href={`/paket/${p.id}`}
-                    className="flex-1 bg-white/90 text-black py-2 rounded-lg text-center"
-                  >
-                    {t.detail}
-                  </Link> */}
                   <button
                     onClick={() => setDetail(p)}
                     className="flex-1 bg-white/90 text-black py-2 rounded-lg"
@@ -908,7 +902,7 @@ export default function HomeClient() {
             <div className="flex gap-4 mt-4">
               {/* Instagram */}
               <a
-                href="https://instagram.com/username"
+                href="https://instagram.com/storysumba"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2 rounded-full bg-white/10 hover:bg-pink-600 transition"
@@ -928,7 +922,7 @@ export default function HomeClient() {
 
               {/* TikTok */}
               <a
-                href="https://tiktok.com/@username"
+                href="https://tiktok.com/@storysumba"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2 rounded-full bg-white/10 hover:bg-black transition"
@@ -998,9 +992,6 @@ export default function HomeClient() {
             <h4 className="text-white font-semibold mb-3">
               {lang === "id" ? "Unit Bisnis Dari" : "Subsidiary Of"}
             </h4>
-            {/* <p className="text-white font-semibold mb-3">
-              {lang === "id" ? "Mahaka Attraction" : "Mahaka Attraction"}
-            </p> */}
             <div className="items-center justify-center">
               <Link href={mahakaUrl} target="_blank" rel="noopener noreferrer">
                 <Image
@@ -1252,6 +1243,7 @@ export default function HomeClient() {
           </div>
         </div>
       )}
+
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
