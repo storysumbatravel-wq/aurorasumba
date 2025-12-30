@@ -49,7 +49,7 @@ export const metadata = {
       { url: "/images/logo2.png", sizes: "48x48", type: "image/png" },
     ],
     apple: "/apple-touch-icon.png",
-    shortcut: "/favicon.icon",
+    shortcut: "/favicon.ico",
   },
 
   openGraph: {
@@ -99,16 +99,16 @@ export default function RootLayout({
           <>
             {/* Google Analytics */}
             <Script
-              src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+              src={`https://www.googletagmanager.com/gtag/js?id=G-1HGRHEXHCQ`}
               strategy="afterInteractive"
             />
-            <Script id="ga" strategy="afterInteractive">
+            <Script id="ga-init" strategy="afterInteractive">
               {`
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-                gtag('config', '${GA_ID}');
-              `}
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-1HGRHEXHCQ');
+  `}
             </Script>
           </>
         )}
