@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useLanguage } from "@/app/context/ContectLanguage";
 import Image from "next/image";
 import { Menu, X, Globe } from "lucide-react";
@@ -10,14 +10,6 @@ import Link from "next/link";
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { lang, setLang, t } = useLanguage();
-
-  // OPTIONAL: restore language from localStorage (AMAN)
-  useEffect(() => {
-    const savedLang = localStorage.getItem("lang");
-    if (savedLang === "id" || savedLang === "en") {
-      setLang(savedLang);
-    }
-  }, [setLang]);
 
   const toggleLang = () => {
     const nextLang = lang === "id" ? "en" : "id";

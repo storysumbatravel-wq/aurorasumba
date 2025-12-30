@@ -415,21 +415,16 @@ const sectionZoom: Variants = {
 
 export default function HomeClient() {
   const { lang, t } = useLanguage();
-
   const [detail, setDetail] = useState<PackageItem | null>(null);
-
   const [booking, setBooking] = useState<PackageItem | null>(null);
-
-  const prices = booking ? packageDetails[booking.id].prices : [];
-
   const [people, setPeople] = useState(2);
-
-  const pricePerPax = booking ? getPriceByPax(prices, people) : 0;
-
-  const totalPrice = pricePerPax * people;
 
   // 2. STATE UNTUK LIGHTBOX
   const [galleryIndex, setGalleryIndex] = useState(-1);
+
+  const prices = booking ? packageDetails[booking.id].prices : [];
+  const pricePerPax = booking ? getPriceByPax(prices, people) : 0;
+  const totalPrice = pricePerPax * people;
 
   // Daftar gambar galeri
   const galleryImages = [
@@ -446,11 +441,6 @@ export default function HomeClient() {
   // Format untuk slides
   const slides = galleryImages.map((src) => ({ src }));
 
-  const mounted = useState(true);
-
-  if (!mounted) {
-    return <main className="font-sans opacity-0" />;
-  }
   return (
     <main className="font-sans">
       {/* ================= HOME ================= */}
