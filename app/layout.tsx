@@ -1,6 +1,8 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
+import Providers from "./providers";
+import ClientLayout from "./ClientLayout";
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 
@@ -87,9 +89,9 @@ export const metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="id">
       <head>
@@ -114,7 +116,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <Providers>
+          <ClientLayout>{children}</ClientLayout>
+        </Providers>
       </body>
     </html>
   );

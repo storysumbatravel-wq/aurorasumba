@@ -1,79 +1,52 @@
 "use client";
 
 import { useState } from "react";
-import { Instagram, MessageCircle, Music2 } from "lucide-react";
-import { Menu, X, Globe } from "lucide-react";
-import { BiCheckShield, BiFile } from "react-icons/bi";
-import { FaTripadvisor } from "react-icons/fa";
 import Image from "next/image";
 import Link from "next/link";
+import { useLanguage } from "@/app/context/ContectLanguage";
+import { blogs } from "@/lib/blogs";
+import { motion, Variants } from "framer-motion";
+import { BiFile, BiCheckShield } from "react-icons/bi";
 
-import { motion, AnimatePresence, Variants } from "framer-motion";
+// 1. IMPORT LIGHTBOX & PLUGINS
+import Lightbox from "yet-another-react-lightbox";
+import Download from "yet-another-react-lightbox/plugins/download";
+import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
+import Zoom from "yet-another-react-lightbox/plugins/zoom";
+import "yet-another-react-lightbox/styles.css";
+import "yet-another-react-lightbox/plugins/thumbnails.css";
 
 const wa = process.env.NEXT_PUBLIC_WA_NUMBER;
-const mahakaUrl =
-  process.env.NEXT_PUBLIC_MAHAKA_URL ?? "https://mahakaattraction.id";
 
-/* ================= TRANSLATION ================= */
-const translations = {
-  id: {
-    nav: {
-      home: "Home",
-      about: "Tentang Kami",
-      gallery: "Galeri",
-      paket: "Paket",
-      kontak: "Kontak",
-    },
-    homeTitle: "Liburan Impian Anda",
-    homeDesc: "Nikmati paket wisata terbaik dengan pelayanan profesional.",
-    galleryTitle: "Galeri Wisata",
-    paketTitle: "Paket Wisata",
-    kontakTitle: "Kontak Kami",
-    detail: "Detail",
-    booking: "Booking",
-    close: "Tutup",
-    sendWA: "Kirim ke WhatsApp",
-    cancel: "Batal",
-    form: {
-      title: "Form Booking",
-      name: "Nama Lengkap",
-      phone: "No WhatsApp",
-      email: "Email",
-      date: "Tanggal Berangkat",
-      people: "Jumlah Peserta",
-      note: "Catatan Tambahan",
-    },
-    waIntro: "Halo, saya ingin booking paket",
-  },
-  en: {
-    nav: {
-      home: "Home",
-      about: "About Us",
-      gallery: "Gallery",
-      paket: "Packages",
-      kontak: "Contact",
-    },
-    homeTitle: "Your Dream Vacation",
-    homeDesc: "Enjoy the best tour packages with professional service.",
-    galleryTitle: "Travel Gallery",
-    paketTitle: "Tour Packages",
-    kontakTitle: "Contact Us",
-    detail: "Details",
-    booking: "Booking",
-    close: "Close",
-    sendWA: "Send to WhatsApp",
-    cancel: "Cancel",
-    form: {
-      title: "Booking Form",
-      name: "Full Name",
-      phone: "WhatsApp Number",
-      email: "Email",
-      date: "Departure Date",
-      people: "Number of People",
-      note: "Additional Notes",
-    },
-    waIntro: "Hello, I would like to book the package",
-  },
+type LangText = {
+  id: string;
+  en: string;
+};
+
+type LangList = {
+  id: string[];
+  en: string[];
+};
+
+type PriceItem = {
+  pax: string;
+  price: string;
+};
+
+type PackageDetail = {
+  description: LangText;
+  itinerary: LangList;
+  facilities: LangList;
+  exclude: LangList;
+  prices: PriceItem[];
+};
+
+type PackageItem = {
+  id: number;
+  name: string;
+  days: string;
+  price: string;
+  image: string;
 };
 
 /* ================= DATA PAKET ================= */
@@ -115,41 +88,23 @@ const packages = [
   },
 ];
 
-type LangText = {
-  id: string;
-  en: string;
-};
-
-type LangList = {
-  id: string[];
-  en: string[];
-};
-
-type PriceItem = {
-  pax: string;
-  price: string;
-};
-
-type PackageDetail = {
-  description: LangText;
-  facilities: LangList;
-  exclude: LangList;
-  prices: PriceItem[];
-};
-
-type PackageItem = {
-  id: number;
-  name: string;
-  days: string;
-  price: string;
-  image: string;
-};
-
 const packageDetails: Record<number, PackageDetail> = {
   1: {
     description: {
       id: "Paket wisata 3 hari 2 malam dengan destinasi unggulan, cocok untuk liburan singkat.",
       en: "3 days 2 nights tour package, perfect for a short getaway.",
+    },
+    itinerary: {
+      id: [
+        "Hari 1: Jemput Bandara Tambolaka  – Kampung Ratenggaro – Pantai Mandorak – Danau Weikuri ",
+        "Hari 1: Bukit Hiliwuku – Air Terjun Weimarang – Sunset Pantai Wailakiri ",
+        "Hari 3: Check-Out Hotel – Kampung Raja Prailiu – Transfer bandara",
+      ],
+      en: [
+        "Day 1: Pick up at Tambolaka Airport – Ratenggaro Village – Mandorak Beach – Weikuri Lagoon",
+        "Day 2: Hiliwuku Hill – Weimarang Waterfall – Sunset at Wailakiri Beach ",
+        "Day 3: Check-Out hotel – Prailiu King Village – Transfer to airport",
+      ],
     },
     facilities: {
       id: [
@@ -190,6 +145,20 @@ const packageDetails: Record<number, PackageDetail> = {
       id: "Paket wisata 4 hari 3 malam dengan itinerary lebih lengkap dan santai.",
       en: "4 days 3 nights package with more complete itinerary.",
     },
+    itinerary: {
+      id: [
+        "Hari 1: Bandara Tambolaka – Kampung adat Ratenggaro – Pantai Mandorak – Danau Weikuri",
+        "Hari 2: Kampung Adat Praijing – Bukit Warinding",
+        "Hari 3: Air Terjun Tanggedu – Savana Purakambera – Bukit Tanau",
+        "Hari 4: Check-out Hotel – Kampung Raja Prailiu – Transfer bandara",
+      ],
+      en: [
+        "Day 1: Tambolaka Airport – Ratenggaro Traditional Village – Mandorak Beach – Weikuri Lagoon",
+        "Day 2: Prai Ijing Traditional Village – Warinding Hill –",
+        "Day 3: Tanggedu Waterfall – Puru Kambera savanna – Tanau Hill ",
+        "Day 4: Hotel check-out  – Prailiu King Village– Airport transfer",
+      ],
+    },
     facilities: {
       id: [
         "Hotel bintang 3",
@@ -228,6 +197,22 @@ const packageDetails: Record<number, PackageDetail> = {
     description: {
       id: "Paket wisata 5 hari 4 malam untuk eksplorasi destinasi terbaik.",
       en: "5 days 4 nights tour to explore top destinations.",
+    },
+    itinerary: {
+      id: [
+        "Hari 1: Penjemputan bandara – Kampung Adat Ratenggaro – Pantai Mandorak – Danau Weikuri",
+        "Hari 2: Air Terjun Weikucara – Bukit Warinding",
+        "Hari 3: Air Terjun Tanggedu – Savana Puru Kambera – Bukit Tanau",
+        "Hari 4: Air Terjun Weimarang – Pantai Wailakiri",
+        "Hari 5: Check-Out Hotel – Kampung Raja Prailiu– Transfer Bandara",
+      ],
+      en: [
+        "Day 1: Airport pick-up – Ratenggaro Traditional Village – Mandorak Beach – Weikuri Lagoon",
+        "Day 2: Weikucara Waterfall – Warinding Hill",
+        "Day 3: Tanggedu Waterfall – Puru Kambera Savanna – Tanau Hill",
+        "Day 4: Waimarang Waterfall – Wailakiri Beach",
+        "Day 5: Check-Out – Prailiu King Village – Airport transfer",
+      ],
     },
     facilities: {
       id: [
@@ -268,6 +253,24 @@ const packageDetails: Record<number, PackageDetail> = {
       id: "Paket wisata 6 hari 5 malam dengan pengalaman mendalam.",
       en: "6 days 5 nights immersive travel experience.",
     },
+    itinerary: {
+      id: [
+        "Hari 1: Bandara Tambolaka – Kampung Adat Ratenggaro – Pantai Mandorak – Danau Weikuri ",
+        "Hari 2: Air Terjun Weikucara – Kampung Adat Prai Ijing",
+        "Hari 3: Watumbela – Bukit Wairinding",
+        "Hari 4: Bukit Hiliwuku – Air Terjun Weimarang – Pantai Wailakiri",
+        "Hari 5: Air Terjun Tanggedu – Savanna Puru Kambera – Bukit Tanau",
+        "Hari 6: Check-out Hotel – Kampung Raja Prailiu – Transfer bandara",
+      ],
+      en: [
+        "Day 1: Tambolaka Airport – Ratenggaro Traditional Village – Mandora Beach – Weikuri Lagoon",
+        "Day 2: Weikucara Waterfall – Prai Ijing Traditional Village",
+        "Day 3: Watumbela – Wairinding Hill",
+        "Day 4: Hiliwuku Hill – Weimarang Waterfall – Walakiri Beach",
+        "Day 5: Tanggedu Waterfall – Puru Kambera Savanna – Tanau Hill",
+        "Day 6: Hotel check-out – Prailiu King Village – Airport transfer",
+      ],
+    },
     facilities: {
       id: [
         "Hotel bintang 3",
@@ -306,6 +309,26 @@ const packageDetails: Record<number, PackageDetail> = {
     description: {
       id: "Paket wisata 7 hari 6 malam untuk liburan lengkap & santai.",
       en: "7 days 6 nights full and relaxing holiday package.",
+    },
+    itinerary: {
+      id: [
+        "Hari 1: Penjemputan bandara – Kampung Adat Ratenggaro – Pantai Mandorak – Danau Weikuri",
+        "Hari 2: Air Terjun Weikucara – Kampung Adat Prai Ijing",
+        "Hari 3: Watumbela – Bukit Warinding",
+        "Hari 4: Bukit Hiliwuku – Air Terjun Weimarang – Pantai Walakiri",
+        "Hari 5: Air Terjun Tanggedu – Savanna Puru Kambera – Bukit Tanau",
+        "Hari 6: Kampung Adat Rende – Sunset Watu Parunu – Kampung Adat Pau",
+        "Hari 7: Check-out Hotel – Kampung Raja Prailiu – Transfer bandara",
+      ],
+      en: [
+        "Day 1: Airport pick-up – Ratenggaro Traditional Village – Mandorak Beach – Weikuri Lagoon",
+        "Day 2: Weikucara Waterfall – Prai Ijing Traditional Village",
+        "Day 3: Watumbela – Warinding Hill",
+        "Day 4: Hilliwuku Hill – Waimarang Waterfall – Walakiri Beach",
+        "Day 5: Tanggedu Waterfall – Puru Kambera Savanna – Tanau Hill",
+        "Day 6: Rende Traditional Village – Sunset at Watu Parunu – Pau Traditional Village",
+        "Day 7: Hotel check-out – Prailiu King Village – Airport transfer",
+      ],
     },
     facilities: {
       id: [
@@ -363,20 +386,20 @@ const getPriceByPax = (prices: PriceItem[], pax: number): number => {
 
 const formatRupiah = (value: number) => "IDR " + value.toLocaleString("id-ID");
 
+const sectionFadeLeft: Variants = {
+  hidden: { opacity: 0, x: -50 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.7, ease: "easeOut" },
+  },
+};
+
 const sectionFadeUp: Variants = {
   hidden: { opacity: 0, y: 60 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.7, ease: "easeOut" },
-  },
-};
-
-const sectionFadeLeft: Variants = {
-  hidden: { opacity: 0, x: -60 },
-  visible: {
-    opacity: 1,
-    x: 0,
     transition: { duration: 0.7, ease: "easeOut" },
   },
 };
@@ -391,9 +414,7 @@ const sectionZoom: Variants = {
 };
 
 export default function HomeClient() {
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  const [lang, setLang] = useState<"id" | "en">("id");
+  const { lang, t } = useLanguage();
 
   const [detail, setDetail] = useState<PackageItem | null>(null);
 
@@ -407,163 +428,37 @@ export default function HomeClient() {
 
   const totalPrice = pricePerPax * people;
 
-  const t = translations[lang];
+  // 2. STATE UNTUK LIGHTBOX
+  const [galleryIndex, setGalleryIndex] = useState(-1);
 
+  // Daftar gambar galeri
+  const galleryImages = [
+    "/images/gallery-1.jpg",
+    "/images/gallery-2.jpg",
+    "/images/gallery-3.jpg",
+    "/images/gallery-4.jpg",
+    "/images/gallery-5.jpg",
+    "/images/gallery-6.jpg",
+    "/images/gallery-7.jpg",
+    "/images/gallery-8.jpg",
+  ];
+
+  // Format untuk slides
+  const slides = galleryImages.map((src) => ({ src }));
+
+  const mounted = useState(true);
+
+  if (!mounted) {
+    return <main className="font-sans opacity-0" />;
+  }
   return (
     <main className="font-sans">
-      {/* ================= NAVBAR ================= */}
-      <motion.nav
-        initial={{ y: -80, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-        className="fixed top-0 left-0 w-full z-50 bg-white/80 backdrop-blur shadow-sm"
-      >
-        <h2 className="sr-only">
-          Paket Wisata Sumba 3 Hari 2 Malam, 4 Hari 3 Malam, 5 Hari 4 Malam
-        </h2>
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          {/* Logo */}
-          <a href="#home" className="flex items-center gap-3">
-            <Image
-              src="/images/logo.png"
-              alt="Logo"
-              className="h-10 w-auto"
-              height={"600"}
-              width={"300"}
-            />
-            <span className="font-bold text-lg">
-              Story
-              <span className="unbounded-font text-red-700">Sumba</span>
-            </span>
-          </a>
-
-          {/* Desktop Menu */}
-          <div className="hidden md:flex items-center gap-8">
-            <a href="#home" className="hover:text-red-600">
-              {t.nav.home}
-            </a>
-            <a href="#about" className="hover:text-red-600">
-              {t.nav.about}
-            </a>
-            <a href="#gallery" className="hover:text-red-600">
-              {t.nav.gallery}
-            </a>
-            <a href="#paket" className="hover:text-red-600">
-              {t.nav.paket}
-            </a>
-            <a href="#kontak" className="hover:text-red-600">
-              {t.nav.kontak}
-            </a>
-
-            {/* Language Switch */}
-            <button
-              onClick={() => setLang(lang === "id" ? "en" : "id")}
-              className="flex items-center gap-1 border px-3 py-1 rounded-lg text-sm hover:bg-gray-100"
-            >
-              <Globe size={16} />
-              {lang === "id" ? "EN" : "ID"}
-            </button>
-          </div>
-
-          {/* Mobile Button */}
-          <button className="md:hidden" onClick={() => setMenuOpen(true)}>
-            <Menu size={20} />
-          </button>
-        </div>
-
-        {/* Mobile Menu */}
-        <AnimatePresence>
-          {menuOpen && (
-            <motion.div
-              className="fixed inset-0 z-50 md:hidden"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setMenuOpen(false)} // 👈 klik di mana saja = close
-            >
-              {/* OVERLAY */}
-              <div
-                className="absolute inset-0 bg-black/70 backdrop-blur-sm"
-                // onClick={() => setMenuOpen(false)}
-              />
-
-              {/* DRAWER MENU */}
-              <motion.div
-                initial={{ x: "100%" }}
-                animate={{ x: 0 }}
-                exit={{ x: "100%" }}
-                transition={{ duration: 0.4, ease: "easeOut" }}
-                className="absolute top-0 right-0 w-72 h-screen bg-black text-gray-300 p-6 flex flex-col"
-                onClick={(e) => e.stopPropagation()} // 👈 klik menu TIDAK menutup
-              >
-                {/* CLOSE */}
-                <button
-                  className="self-end mb-8"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  <X size={24} />
-                </button>
-
-                {/* MENU */}
-                <a
-                  onClick={() => setMenuOpen(false)}
-                  href="#home"
-                  className="text-2xl font-semibold mb-6 hover:text-white"
-                >
-                  {t.nav.home}
-                </a>
-                <a
-                  onClick={() => setMenuOpen(false)}
-                  href="#about"
-                  className="text-2xl font-semibold mb-6 hover:text-white"
-                >
-                  {t.nav.about}
-                </a>
-                <a
-                  onClick={() => setMenuOpen(false)}
-                  href="#gallery"
-                  className="text-2xl font-semibold mb-6 hover:text-white"
-                >
-                  {t.nav.gallery}
-                </a>
-                <a
-                  onClick={() => setMenuOpen(false)}
-                  href="#paket"
-                  className="text-2xl font-semibold mb-6 hover:text-white"
-                >
-                  {t.nav.paket}
-                </a>
-                <a
-                  onClick={() => setMenuOpen(false)}
-                  href="#kontak"
-                  className="text-2xl font-semibold hover:text-white"
-                >
-                  {t.nav.kontak}
-                </a>
-
-                {/* LANGUAGE */}
-                <button
-                  onClick={() => {
-                    setLang(lang === "id" ? "en" : "id");
-                    setMenuOpen(false);
-                  }}
-                  className="mt-auto border border-gray-600 rounded-lg py-3 text-lg font-semibold hover:bg-white hover:text-black transition"
-                >
-                  <Globe size={18} className="inline mr-2" />
-                  {lang === "id" ? "English" : "Bahasa"}
-                </button>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.nav>
-
       {/* ================= HOME ================= */}
       <motion.section
         id="home"
         className="relative min-h-screen flex items-center justify-center text-center px-6 overflow-hidden"
         variants={sectionFadeUp}
-        initial="visible"
+        initial="hidden"
         animate="visible"
         viewport={{ once: true }}
       >
@@ -600,11 +495,6 @@ export default function HomeClient() {
               : "Enjoy the best tour packages with professional service and handpicked destinations."}
           </p>
 
-          {/* <p className="text-gray-600 mb-7">
-            Kami menyediakan <strong>paket wisata Sumba terpercaya</strong>{" "}
-            dengan durasi 3 hari hingga 7 hari.
-          </p> */}
-
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
               href="#paket"
@@ -612,14 +502,6 @@ export default function HomeClient() {
             >
               {lang === "id" ? "Lihat Paket" : "View Packages"}
             </a>
-
-            {/* <a
-              href="https://wa.me/+6281246994982"
-              target="_blank"
-              className="bg-green-600 hover:bg-green-700 px-8 py-4 rounded-xl font-semibold transition"
-            >
-              {lang === "id" ? "Konsultasi Gratis" : "Free Consultation"}
-            </a> */}
           </div>
         </div>
       </motion.section>
@@ -629,7 +511,7 @@ export default function HomeClient() {
         id="about"
         className="py-24 px-6 bg-linear-to-b from-white via-gray-50 to-white"
         variants={sectionFadeLeft}
-        initial="visible"
+        initial="hidden"
         animate="visible"
         viewport={{ once: true }}
       >
@@ -707,7 +589,7 @@ export default function HomeClient() {
         id="gallery"
         className="py-20 px-6 bg-linear-to-b from-gray-900 via-gray-800 to-gray-900"
         variants={sectionZoom}
-        initial="visible"
+        initial="hidden"
         animate="visible"
         viewport={{ once: true }}
       >
@@ -718,28 +600,50 @@ export default function HomeClient() {
           {t.galleryTitle}
         </h2>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {[
-            "/images/gallery-1.jpg",
-            "/images/gallery-2.jpg",
-            "/images/gallery-3.jpg",
-            "/images/gallery-4.jpg",
-            "/images/gallery-5.jpg",
-            "/images/gallery-6.jpg",
-            "/images/gallery-7.jpg",
-            "/images/gallery-8.jpg",
-          ].map((img, index) => (
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-7xl mx-auto">
+          {galleryImages.map((img, index) => (
             <div
               key={index}
-              className="relative group overflow-hidden rounded-2xl shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-1"
+              onClick={() => setGalleryIndex(index)} // 3. SET INDEX SAAT KLIK
+              className="relative group overflow-hidden rounded-2xl shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-1 cursor-pointer"
             >
               <div
                 className="h-48 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
                 style={{ backgroundImage: `url(${img})` }}
               />
+              {/* Overlay Tipis saat Hover */}
+              <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                <div className="bg-white/20 backdrop-blur-md p-2 rounded-full">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6 text-white"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"
+                    />
+                  </svg>
+                </div>
+              </div>
             </div>
           ))}
         </div>
+
+        {/* 4. KOMPONEN LIGHTBOX */}
+        <Lightbox
+          index={galleryIndex}
+          open={galleryIndex >= 0}
+          close={() => setGalleryIndex(-1)}
+          slides={slides}
+          plugins={[Download, Thumbnails, Zoom]}
+          // Kustomisasi animasi (opsional)
+          animation={{ fade: 300 }}
+        />
       </motion.section>
 
       {/* ================= PAKET ================= */}
@@ -747,7 +651,7 @@ export default function HomeClient() {
         id="paket"
         className="py-20 px-6 bg-linear-to-b from-gray-50 via-white to-gray-100"
         variants={sectionFadeUp}
-        initial="visible"
+        initial="hidden"
         animate="visible"
         viewport={{ once: true }}
       >
@@ -776,13 +680,13 @@ export default function HomeClient() {
                 <div className="flex gap-3 mt-4">
                   <button
                     onClick={() => setDetail(p)}
-                    className="flex-1 bg-white/90 cursor-pointer text-black py-2 rounded-lg"
+                    className="flex-1 bg-white/70 hover:bg-white cursor-pointer text-black py-2 rounded-lg"
                   >
                     {t.detail}
                   </button>
                   <button
                     onClick={() => setBooking(p)}
-                    className="flex-1 bg-red-600 cursor-pointer py-2 rounded-lg"
+                    className="flex-1 bg-red-900 hover:bg-red-600 cursor-pointer py-2 rounded-lg"
                   >
                     {t.booking}
                   </button>
@@ -793,12 +697,82 @@ export default function HomeClient() {
         </div>
       </motion.section>
 
+      {/* ================= BLOG ================= */}
+      <motion.section
+        id="blog"
+        className="py-20 px-6 bg-linear-to-b from-white via-gray-50 to-white"
+        variants={sectionFadeUp}
+        initial="hidden"
+        animate="visible"
+        viewport={{ once: true }}
+      >
+        <h2 className="sr-only">Blog Wisata Sumba</h2>
+
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-3xl font-bold text-center mb-12">
+            {t.blogTitle} {/* Menggunakan translasi statis */}
+          </h2>
+
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {blogs.map((blog) => (
+              <motion.article
+                key={blog.id}
+                whileHover={{ y: -6 }}
+                className="bg-white rounded-2xl overflow-hidden shadow hover:shadow-2xl transition"
+              >
+                {/* Image */}
+                <div className="relative h-52">
+                  <Image
+                    src={blog.image}
+                    alt={blog.title[lang]} // Mengakses judul berdasarkan bahasa
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" // Tambahkan ini
+                  />
+                </div>
+
+                {/* Content */}
+                <div className="p-6">
+                  <p className="text-sm text-gray-500 mb-2">
+                    {new Date(blog.date).toLocaleDateString(
+                      lang === "id" ? "id-ID" : "en-US",
+                      {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      }
+                    )}
+                  </p>
+
+                  <h3 className="text-xl font-bold mb-2 line-clamp-2">
+                    {blog.title[lang]}{" "}
+                    {/* Mengakses judul berdasarkan bahasa */}
+                  </h3>
+
+                  <p className="text-gray-600 text-sm mb-4 line-clamp-3">
+                    {blog.excerpt[lang]}{" "}
+                    {/* Mengakses ringkasan berdasarkan bahasa */}
+                  </p>
+
+                  <Link
+                    href={`/blog/${blog.slug[lang]}?lang=${lang}`}
+                    className="inline-flex items-center text-red-600 font-semibold hover:underline"
+                  >
+                    {lang === "id" ? "Baca Selengkapnya" : "Read More"} →
+                  </Link>
+                </div>
+              </motion.article>
+            ))}
+          </div>
+        </div>
+      </motion.section>
+
       {/* ================= KONTAK ================= */}
       <motion.section
         id="kontak"
         className="py-20 px-6 bg-linear-to-b from-white via-gray-100 to-white"
         variants={sectionFadeUp}
-        initial="visible"
+        initial="hidden"
         animate="visible"
         viewport={{ once: true }}
       >
@@ -871,160 +845,6 @@ export default function HomeClient() {
         </div>
       </motion.section>
 
-      {/* ================= FOOTER ================= */}
-      <footer className="bg-black text-gray-300">
-        <h2 className="sr-only">
-          Paket Wisata Sumba 3 Hari 2 Malam, 4 Hari 3 Malam, 5 Hari 4 Malam
-        </h2>
-        <div className="max-w-7xl mx-auto px-6 py-12 grid gap-6 md:grid-cols-5">
-          {/* Brand */}
-          <div>
-            <div className="flex items-center mb-3">
-              <Image
-                src="/images/logo.png"
-                alt="Travel Agent Logo"
-                className="h-12 w-auto"
-                height={"300"}
-                width={"50"}
-              />
-              <h3 className="text-xl font-bold text-white">
-                Story<span className="unbounded-font text-red-700">Sumba</span>
-              </h3>
-            </div>
-
-            <p className="text-sm text-gray-300">
-              {lang === "id"
-                ? "Partner perjalanan terbaik untuk liburan Anda."
-                : "Your trusted partner for unforgettable journeys."}
-            </p>
-
-            {/* Social Media */}
-            <div className="flex gap-4 mt-4">
-              {/* Instagram */}
-              <a
-                href="https://instagram.com/storysumba"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 rounded-full bg-white/10 hover:bg-pink-600 transition"
-              >
-                <Instagram size={20} className="text-white" />
-              </a>
-
-              {/* WhatsApp */}
-              <a
-                href="https://wa.me/+6281246994982"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 rounded-full bg-white/10 hover:bg-green-600 transition"
-              >
-                <MessageCircle size={20} className="text-white" />
-              </a>
-
-              {/* TikTok */}
-              <a
-                href="https://tiktok.com/@storysumba"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 rounded-full bg-white/10 hover:bg-black transition"
-              >
-                <Music2 size={20} className="text-white" />
-              </a>
-
-              {/* Tripadvisor */}
-              <a
-                href="https://www.tripadvisor.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 rounded-full bg-white/10 hover:bg-green-700 transition"
-                aria-label="Tripadvisor"
-              >
-                <FaTripadvisor size={20} className="text-white" />
-              </a>
-            </div>
-          </div>
-
-          {/* Navigation */}
-          <div>
-            <h4 className="text-white font-semibold mb-3">
-              {lang === "id" ? "Menu" : "Menu"}
-            </h4>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <a href="#home" className="hover:text-white">
-                  {t.nav.home}
-                </a>
-              </li>
-              <li>
-                <a href="#gallery" className="hover:text-white">
-                  {t.nav.gallery}
-                </a>
-              </li>
-              <li>
-                <a href="#paket" className="hover:text-white">
-                  {t.nav.paket}
-                </a>
-              </li>
-              <li>
-                <a href="#kontak" className="hover:text-white">
-                  {t.nav.kontak}
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          {/* Permit */}
-          <div>
-            <h4 className="text-white font-semibold mb-3">
-              {lang === "id" ? "Ijin Pariwisata" : "Tourism Permit"}
-            </h4>
-            <div className="items-center justify-center">
-              <Image
-                src="/images/ijin.jpg"
-                alt="Travel Agent Ijin"
-                className="h-30 w-auto"
-                height={"600"}
-                width={"300"}
-              />
-            </div>
-          </div>
-
-          <div>
-            <h4 className="text-white font-semibold mb-3">
-              {lang === "id" ? "Unit Bisnis Dari" : "Subsidiary Of"}
-            </h4>
-            <div className="items-center justify-center">
-              <Link href={mahakaUrl} target="_blank" rel="noopener noreferrer">
-                <Image
-                  src="/images/logo-mahaka.jpg"
-                  alt="Mahaka attraction"
-                  className="h-12 w-auto cursor-pointer hover:opacity-80 transition "
-                  height={"50"}
-                  width={"300"}
-                />
-              </Link>
-            </div>
-          </div>
-
-          {/* Contact */}
-          <div>
-            <h4 className="text-white font-semibold mb-3">
-              {lang === "id" ? "Kontak" : "Contact"}
-            </h4>
-            <p className="text-sm">Email: storysumbatravel@gmail.com</p>
-            <p className="text-sm">WhatsApp: +62812-4699-4982</p>
-            {/* <p className="text-sm mt-2">
-              {lang === "id" ? "Siap melayani 24/7" : "Available 24/7"}
-            </p> */}
-          </div>
-        </div>
-
-        {/* Bottom */}
-        <div className="border-t border-gray-700 py-4 text-center text-sm">
-          © {new Date().getFullYear()} StorySumba.
-          {lang === "id" ? " Seluruh hak cipta." : " All rights reserved."}
-        </div>
-      </footer>
-
       {/* ================= MODAL DETAIL ================= */}
       {detail && (
         <div
@@ -1032,7 +852,7 @@ export default function HomeClient() {
           onClick={() => setDetail(null)}
         >
           <div
-            className="bg-white max-w-5xl w-full rounded-2xl relative max-h-[90vh] overflow-y-auto md:overflow-hidden"
+            className="bg-white max-w-6xl w-full rounded-2xl relative max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close */}
@@ -1043,20 +863,11 @@ export default function HomeClient() {
               ✕
             </button>
 
-            {/* Image */}
-            {/* <div
-              className="h-64 md:h-80 bg-cover bg-center"
-              style={{ backgroundImage: `url(${detail.image})` }}
-            /> */}
-
-            {/* Content */}
-            <div className="p-6 md:p-8 grid md:grid-cols-2 gap-8">
-              {/* LEFT */}
+            {/* ================= CONTENT ================= */}
+            <div className="p-6 md:p-8 grid grid-cols-1 md:grid-cols-3 gap-8">
+              {/* ================= COL 2 : FASILITAS ================= */}
               <div>
-                <h3 className="text-2xl font-bold mb-2">Paket {detail.name}</h3>
-                <p className="text-gray-600 mb-4">
-                  {packageDetails[detail.id].description[lang]}
-                </p>
+                <h3 className="text-2xl font-bold mb-3">Paket {detail.name}</h3>
 
                 <div className="mb-6">
                   <h4 className="font-semibold mb-2">
@@ -1075,7 +886,6 @@ export default function HomeClient() {
                   <h4 className="font-semibold mb-2">
                     {lang === "id" ? "Tidak Termasuk:" : "Exclude:"}
                   </h4>
-
                   <ul className="list-disc list-inside text-sm text-gray-600 space-y-1">
                     {packageDetails[detail.id].exclude[lang].map(
                       (item: string, i: number) => (
@@ -1086,8 +896,30 @@ export default function HomeClient() {
                 </div>
               </div>
 
-              {/* RIGHT */}
-              <div className="bg-gray-50 rounded-xl p-6">
+              {/* ================= COL 3 : ITINERARY / DESKRIPSI ================= */}
+              <div>
+                <h4 className="font-semibold mb-3">
+                  {lang === "id" ? "Itinerary" : "Itinerary"}
+                </h4>
+
+                <p className="text-gray-600 text-sm leading-relaxed mb-3">
+                  {packageDetails[detail.id].description[lang]}
+                </p>
+
+                <ul className="space-y-2 text-sm text-gray-600">
+                  {packageDetails[detail.id].itinerary[lang].map(
+                    (day: string, i: number) => (
+                      <li key={i} className="flex gap-2">
+                        <span className="font-semibold">•</span>
+                        <span>{day}</span>
+                      </li>
+                    )
+                  )}
+                </ul>
+              </div>
+
+              {/* ================= COL 1 : BOOKING ================= */}
+              <div className="bg-gray-50 rounded-xl p-6 h-fit sticky top-6">
                 <h4 className="font-semibold mb-4">
                   {lang === "id" ? "Harga Paket" : "Package Prices"}
                 </h4>
@@ -1108,8 +940,8 @@ export default function HomeClient() {
 
                 <button
                   onClick={() => {
-                    setDetail(null); // tutup modal detail
-                    setBooking(detail); // buka modal booking + kirim data paket
+                    setDetail(null);
+                    setBooking(detail);
                   }}
                   className="w-full mt-6 bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-semibold transition"
                 >
@@ -1132,7 +964,10 @@ export default function HomeClient() {
             <form
               onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
                 e.preventDefault();
-                if (!booking) return;
+                if (!booking || !pricePerPax) {
+                  alert("Silahkan pilih paket terlebih dahulu");
+                  return;
+                }
 
                 const formData = new FormData(e.currentTarget);
 
