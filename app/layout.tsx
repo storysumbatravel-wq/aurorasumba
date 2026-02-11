@@ -45,11 +45,11 @@ export const metadata = {
   /* 🔥 TITLE ICON / FAVICON */
   icons: {
     icon: [
-      { url: "/images/logo2.png", sizes: "32x32", type: "image/png" },
-      { url: "/images/logo2.png", sizes: "48x48", type: "image/png" },
+      { url: "/images/logo2.jpg", sizes: "32x32", type: "image/jpg" },
+      { url: "/images/logo2.jpg", sizes: "48x48", type: "image/jpg" },
     ],
-    apple: "/images/logo2.png",
-    shortcut: "/images/logo2.png",
+    apple: "/images/logo2.jpg",
+    shortcut: "/images/logo2.jpg",
   },
 
   openGraph: {

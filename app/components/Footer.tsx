@@ -28,7 +28,7 @@ export default function Footer() {
         <div>
           <div className="flex items-center mb-3">
             <Image
-              src="/images/logo.png"
+              src="/images/logo.jpg"
               alt="Story Sumba Logo"
               className="h-12 w-auto"
               height={"300"} // Gunakan number, bukan string

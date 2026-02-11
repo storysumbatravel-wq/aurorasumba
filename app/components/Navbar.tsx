@@ -33,7 +33,7 @@ export default function Navbar() {
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3">
           <Image
-            src="/images/logo.png"
+            src="/images/logo.jpg"
             alt="Story Sumba Travel"
             height={40}
             width={120}
@@ -55,7 +55,7 @@ export default function Navbar() {
               >
                 {t.nav[item as keyof typeof t.nav]}
               </Link>
-            )
+            ),
           )}
 
           <button
@@ -117,7 +117,7 @@ export default function Navbar() {
                     >
                       {t.nav[item as keyof typeof t.nav]}
                     </Link>
-                  )
+                  ),
                 )}
               </div>
 
