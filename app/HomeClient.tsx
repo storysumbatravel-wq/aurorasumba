@@ -10,7 +10,6 @@ import { BiFile, BiCheckShield } from "react-icons/bi";
 
 // 1. IMPORT LIGHTBOX & PLUGINS
 import Lightbox from "yet-another-react-lightbox";
-import Download from "yet-another-react-lightbox/plugins/download";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import "yet-another-react-lightbox/styles.css";
@@ -630,7 +629,7 @@ export default function HomeClient() {
           open={galleryIndex >= 0}
           close={() => setGalleryIndex(-1)}
           slides={slides}
-          plugins={[Download, Thumbnails, Zoom]}
+          plugins={[Thumbnails, Zoom]}
           // Kustomisasi animasi (opsional)
           animation={{ fade: 300 }}
         />
@@ -730,7 +729,7 @@ export default function HomeClient() {
                         year: "numeric",
                         month: "long",
                         day: "numeric",
-                      }
+                      },
                     )}
                   </p>
 
@@ -867,7 +866,7 @@ export default function HomeClient() {
                     {packageDetails[detail.id].facilities[lang].map(
                       (item: string, i: number) => (
                         <li key={i}>{item}</li>
-                      )
+                      ),
                     )}
                   </ul>
                 </div>
@@ -880,7 +879,7 @@ export default function HomeClient() {
                     {packageDetails[detail.id].exclude[lang].map(
                       (item: string, i: number) => (
                         <li key={i}>{item}</li>
-                      )
+                      ),
                     )}
                   </ul>
                 </div>
@@ -903,7 +902,7 @@ export default function HomeClient() {
                         <span className="font-semibold">•</span>
                         <span>{day}</span>
                       </li>
-                    )
+                    ),
                   )}
                 </ul>
               </div>
@@ -924,7 +923,7 @@ export default function HomeClient() {
                         <span>{p.pax}</span>
                         <span className="font-semibold">{p.price}</span>
                       </li>
-                    )
+                    ),
                   )}
                 </ul>
 
@@ -984,7 +983,7 @@ export default function HomeClient() {
 
                 window.open(
                   `https://wa.me/${wa}?text=${encodeURIComponent(text)}`,
-                  "_blank"
+                  "_blank",
                 );
               }}
               className="space-y-3"
@@ -1036,8 +1035,8 @@ export default function HomeClient() {
                     {pricePerPax
                       ? formatRupiah(pricePerPax)
                       : lang === "id"
-                      ? "Tidak tersedia"
-                      : "Not available"}
+                        ? "Tidak tersedia"
+                        : "Not available"}
                   </span>
                 </div>
 
