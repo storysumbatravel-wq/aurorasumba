@@ -10,6 +10,7 @@ import { BiFile, BiCheckShield } from "react-icons/bi";
 
 // 1. IMPORT LIGHTBOX & PLUGINS
 import Lightbox from "yet-another-react-lightbox";
+import Download from "yet-another-react-lightbox/plugins/download";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import "yet-another-react-lightbox/styles.css";
@@ -629,7 +630,7 @@ export default function HomeClient() {
           open={galleryIndex >= 0}
           close={() => setGalleryIndex(-1)}
           slides={slides}
-          plugins={[Thumbnails, Zoom]}
+          plugins={[Download, Thumbnails, Zoom]}
           // Kustomisasi animasi (opsional)
           animation={{ fade: 300 }}
         />
